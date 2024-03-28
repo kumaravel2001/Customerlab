@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Modal, Input, Avatar, Button, Typography, message } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import SchemaSegment from "./helper/SaveSegmentForm";
+import axios from "axios";
 
 const DashBoard = () => {
   const [visible, setVisible] = useState(false);
@@ -21,7 +22,7 @@ const DashBoard = () => {
   ];
 
   const handleSaveSegment = () => {
-    console.log(dynamicDropdowns);
+    // console.log(dynamicDropdowns);
 
     const formattedSchema = dynamicDropdowns.map((option) => {
       const foundOption = schemaOptions.find(
@@ -37,6 +38,9 @@ const DashBoard = () => {
 
     if (dataToSend.schema && dataToSend.schema.length > 0) {
       message.loading({ key: "1", content: "Processing...", duration: 1 });
+      //   calling api
+      PostData(dataToSend);
+      //
       setTimeout(() => {
         message.success({ key: "1", content: "Success" });
         setVisible(false);
@@ -53,9 +57,23 @@ const DashBoard = () => {
     }
   };
 
+  const PostData = async (dataToSend) => {
+    try {
+      const response = await axios.post(
+        "https://webhook.site/14ba96c9-0891-416e-b68e-1e4aeb2af02a",
+        dataToSend
+      );
+      console.log("Data posted successfully:", response.data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <div className="savesegment-container">
-      <Button onClick={() => setVisible(true)}>Save Segment</Button>
+      <Button className="openModalBtn" onClick={() => setVisible(true)}>
+        Save Segment
+      </Button>
       <Modal
         title={
           <div className="modal-title">
@@ -124,7 +142,7 @@ const DashBoard = () => {
             <div>
               <Avatar
                 className="rounded-circle green-bg"
-                style={{ marginRight: "10px" }}
+                style={{ marginRight: "4px" }}
               />
               - User Traits
             </div>
@@ -132,7 +150,7 @@ const DashBoard = () => {
             <div>
               <Avatar
                 className="rounded-circle red-bg"
-                style={{ marginRight: "10px" }}
+                style={{ marginRight: "4px" }}
               />
               - Group Traits
             </div>
